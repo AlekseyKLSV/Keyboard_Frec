@@ -84,6 +84,8 @@ typedef struct  {
 }FULL_FONT;
 */
 extern tFont Font;
+
+
 extern LCD_DrawPropTypeDef DrawProp;
 
 /* USER CODE END PD */
@@ -167,6 +169,7 @@ int main(void)
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
 
   ili9488_Init();
+  ili9488_Init();
 
   /* USER CODE END 2 */
 
@@ -192,9 +195,13 @@ int main(void)
 
 //	 BSP_LCD_SetFont(&Font_BIG_MY);
 	 BSP_LCD_SetFont_MY(&Font);
-	 BSP_LCD_SetTextColor(LCD_COLOR_RED);
-	 BSP_LCD_SetBackColor(LCD_COLOR_YELLOW);
-	 BSP_LCD_DisplayStringAt(10, 50, (uint8_t*)"Analog", CENTER_MODE );
+	 BSP_LCD_SetTextColor(LCD_COLOR_YELLOW);
+	 BSP_LCD_SetBackColor(LCD_COLOR_RED);
+	// BSP_LCD_DsplStr_My(20, 50, (uint8_t*)"Analog,- Dew!!! 32.568", CENTER_MODE );
+	 BSP_LCD_DsplStr_My(20, 20, (uint8_t*)"ДАBЛЕНИЕ PRESSURE 0.3", CENTER_MODE );
+	 BSP_LCD_DsplStr_My(20, 90, (uint8_t*)"ПРОЦЕСС - \"Разгрузка\"", CENTER_MODE );
+	 BSP_LCD_DsplStr_My(20, 150, (uint8_t*)"123,78&  456.78%", CENTER_MODE );
+
 
 	//   const  tChar *found;
 
@@ -209,11 +216,10 @@ int main(void)
 //	    DrawChar_MY(10, 10,&Font, &drw_wpr,'A');
 //
 //     //   DrawChar_MY(10, 10, charData);
-//
+//апеоакено
 //	    __NOP();
 //
 //	 //   BSP_LCD_DrawBitmap(Xpos, Ypos, bitmap);
-
 
 
 

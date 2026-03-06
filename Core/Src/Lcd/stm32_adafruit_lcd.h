@@ -205,6 +205,12 @@ void     BSP_LCD_Scroll(int16_t Scroll, uint16_t TopFix, uint16_t BottonFix);
 
 //const tChar* findChar(const tFont *font, char code);
 
+void BSP_LCD_DsplStr_My(uint16_t Xpos, uint16_t Ypos, uint8_t *Text, Line_ModeTypdef Mode);
+void DrawChar_MY(uint16_t Xpos, uint16_t Ypos,  uint16_t height, uint16_t width, const uint8_t *pChar);
+
+
+
+
  
 #ifdef __cplusplus
 }

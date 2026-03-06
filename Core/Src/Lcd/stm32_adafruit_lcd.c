@@ -88,6 +88,7 @@ EndDependencies */
 #include "Fonts/fonts.h"
 
 
+
 /* @defgroup STM32_ADAFRUIT_LCD_Private_Defines */
 #define POLY_X(Z)             ((int32_t)((Points + (Z))->X))
 #define POLY_Y(Z)             ((int32_t)((Points + (Z))->Y))
@@ -105,6 +106,7 @@ EndDependencies */
 LCD_DrawPropTypeDef DrawProp;
 
 extern LCD_DrvTypeDef  *lcd_drv;
+
 
 
 extern tFont Font;
@@ -270,28 +272,28 @@ void BSP_LCD_ClearStringLine(uint16_t Line)
   */
 
 
-/*
+
 
 void DisplayProportionalChar(uint16_t x, uint16_t y, uint8_t Ascii)
 {
     const tChar *CharPointer;
-  //  char pCh = tChar.
+ //   char pCh = tChar.
 
     // Поиск символа в шрифте
-     CharPointer = findChar(&Font,с); //findChar
+   //  CharPointer = findChar(&Font,с); //findChar
 
-    if(CharPointer != NULL) {
+ //   if(CharPointer != NULL) {
         // Рисуем символ с его реальной шириной
 //        BSP_LCD_DrawBitmap(x, y,
 //                          CharPointer->image->width,     // реальная ширина символа
 //                          CharPointer->image->height,    // высота символа
 //                          CharPointer->image->data);     // данные символа
 
-    	   uint16_t  WIDTH = Font.chars->image->width;
-    }
+//    	   uint16_t  WIDTH = Font.chars->image->width;
+//  }
 }
 
-*/
+
 
 
 void BSP_LCD_DisplayChar(uint16_t Xpos, uint16_t Ypos, uint8_t Ascii)
@@ -318,7 +320,7 @@ void BSP_LCD_DisplayStringAt(uint16_t Xpos, uint16_t Ypos, uint8_t *Text, Line_M
   uint16_t refcolumn = 1, i = 0;
   uint32_t size = 0, xsize = 0; 
   uint8_t  *ptr = Text;
-  
+
   /* Get the text size */
   while (*ptr++) size ++ ;
   
@@ -369,6 +371,47 @@ void BSP_LCD_DisplayStringAt(uint16_t Xpos, uint16_t Ypos, uint8_t *Text, Line_M
     i++;
   }
 }
+
+
+
+void BSP_LCD_DsplStr_My(uint16_t Xpos, uint16_t Ypos, uint8_t *Text, Line_ModeTypdef Mode)
+{
+
+	 uint16_t x=Xpos; uint16_t y= Ypos;
+
+	  typedef struct {
+	      long int code;
+	      uint16_t width;
+	      uint16_t height;
+	      uint8_t dataSize;
+	      const uint8_t* data;
+	      int found;
+	  } CharInfo;
+
+	  CharInfo info;
+
+
+	  while ((*Text != 0)   )
+	  {
+	     uint8_t length = strlen((char*)Text);
+	     uint16_t ascii_code = (int)(*Text);
+
+	  for(int i = 0; i < Font.length; i++) {
+	         if(Font.chars[i].code == ascii_code) {   // chars.code  Font.chars[i].code
+
+	        	 info.width=Font.chars[i].image->width;
+	        	 info.height=Font.chars[i].image->height;
+
+	        	 info.data=Font.chars[i].image->data;
+	        	 DrawChar_MY(x,y,info.height,info.width,info.data);
+                 x+=info.width;
+	         }
+	       }
+	Text++;
+	}
+}
+
+
 
 /**
   * @brief  Displays a character on the LCD.
@@ -933,8 +976,8 @@ void BSP_LCD_DisplayOff(void)
       index = (((height-counterh-1)*width)+(counterw))*2+OFFSET_BITMAP;
       if(line & (1 << (width- counterw + offset- 1))) 
       {
-        bitmap[index] = (uint8_t)DrawProp.TextColor;
-        bitmap[index+1] = (uint8_t)(DrawProp.TextColor >> 8);
+   //     bitmap[index] = (uint8_t)DrawProp.TextColor;
+   //     bitmap[index+1] = (uint8_t)(DrawProp.TextColor >> 8);
       }
       else
       {
@@ -945,6 +988,117 @@ void BSP_LCD_DisplayOff(void)
   }
   BSP_LCD_DrawBitmap(Xpos, Ypos, bitmap);
 }
+
+
+
+
+
+
+
+
+ void DrawChar_MY(uint16_t Xpos, uint16_t Ypos,  uint16_t height, uint16_t width, const uint8_t *pChar)
+{
+  uint64_t counterh = 0, counterw = 0, index = 0;
+  uint8_t offset = 0;
+  uint8_t *pchar = NULL;
+  uint64_t line = 0;
+
+
+
+  /* Fill bitmap header*/
+  *(uint16_t *) (bitmap + 2) = (uint16_t)(height*width*2+OFFSET_BITMAP);
+  *(uint16_t *) (bitmap + 4) = (uint16_t)((height*width*2+OFFSET_BITMAP)>>16);
+  *(uint16_t *) (bitmap + 10) = OFFSET_BITMAP;
+  *(uint16_t *) (bitmap + 18) = (uint16_t)(width);
+  *(uint16_t *) (bitmap + 20) = (uint16_t)((width)>>16);
+  *(uint16_t *) (bitmap + 22) = (uint16_t)(height);
+  *(uint16_t *) (bitmap + 24) = (uint16_t)((height)>>16);
+
+
+  offset =  8 *((width + 7)/8) - width ;
+
+  for(counterh = 0; counterh < height; counterh++)
+  {
+    pchar = ((uint8_t *)pChar + (width + 7)/8 * counterh);
+
+    if(((width + 7)/8) == 6)
+        {
+          line =  (pchar[0]<< 40) | (pchar[1]<< 32) | pchar[2]<< 24| pchar[3]<<16| pchar[4]<<8|pchar[5];
+        }
+
+    if(((width + 7)/8) == 5)
+        {
+          line =  (pchar[0]<< 32) | (pchar[1]<< 24) | pchar[2]<< 16| pchar[3]<<8| pchar[4];
+        }
+
+    if(((width + 7)/8) == 4)
+    {
+      line =  (pchar[0]<< 24) | (pchar[1]<< 16) | pchar[2]<< 8| pchar[3];
+    }
+
+
+    if(((width + 7)/8) == 3)
+    {
+      line =  (pchar[0]<< 16) | (pchar[1]<< 8) | pchar[2];
+    }
+
+    if(((width + 7)/8) == 2)
+    {
+      line =  (pchar[0]<< 8) | pchar[1];
+    }
+
+    if(((width + 7)/8) == 1)
+    {
+      line =  pchar[0];
+    }
+
+    for (counterw = 0; counterw < width; counterw++)
+    {
+      /* Image in the bitmap is written from the bottom to the top */
+      /* Need to invert image in the bitmap */
+      index = (((height-counterh-1)*width)+(counterw))*2+OFFSET_BITMAP;
+      if(line & (1 << (width- counterw + offset- 1)))
+      {
+        bitmap[index] = (uint8_t)DrawProp.TextColor;
+        bitmap[index+1] = (uint8_t)(DrawProp.TextColor >> 8);
+      }
+      else
+      {
+        bitmap[index] = (uint8_t)DrawProp.BackColor;
+        bitmap[index+1] = (uint8_t)(DrawProp.BackColor >> 8);
+      }
+    }
+  }
+  BSP_LCD_DrawBitmap(Xpos, Ypos, bitmap);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
