@@ -87,6 +87,8 @@ EndDependencies */
 #include "stm32_adafruit_lcd.h"
 #include "Fonts/fonts.h"
 
+#include <string.h>
+
 
 
 /* @defgroup STM32_ADAFRUIT_LCD_Private_Defines */
@@ -299,7 +301,7 @@ void DisplayProportionalChar(uint16_t x, uint16_t y, uint8_t Ascii)
 void BSP_LCD_DisplayChar(uint16_t Xpos, uint16_t Ypos, uint8_t Ascii)
 {
 	//DrawChar(Xpos, Ypos, &DrawProp.pFont->table[(Ascii-' ') * DrawProp.pFont->Height * ((DrawProp.pFont->Width + 7) / 8)]);
-	DrawChar(Xpos, Ypos, Font.chars->image->data[(Ascii) * Font.chars->image->height * ((Font.chars->image->width+7)/8)]);
+	BSP_LCD_DsplStr_My(Xpos, Ypos, Font.chars->image->data[(Ascii) * Font.chars->image->height * ((Font.chars->image->width+7)/8)]);
 }
 
 /**
@@ -374,10 +376,77 @@ void BSP_LCD_DisplayStringAt(uint16_t Xpos, uint16_t Ypos, uint8_t *Text, Line_M
 
 
 
-void BSP_LCD_DsplStr_My(uint16_t Xpos, uint16_t Ypos, uint8_t *Text, Line_ModeTypdef Mode)
+
+void BSP_LCD_DisplayStringAt_MY(uint16_t Xpos, uint16_t Ypos, uint8_t *Text, Line_ModeTypdef Mode)
+{
+	  uint8_t  *ptr = Text;
+	 // uint16_t refcolumn = 1, i = 0;
+	uint16_t result_x;
+
+	  uint16_t size_txt_pix = 0;
+	  uint16_t width = 0;
+	  uint16_t LCD_Size_X= BSP_LCD_GetXSize();
+
+
+
+	//  while (*ptr++) size ++ ;
+
+	//  int length = strlen(Text);
+
+	  while (*Text != 0)
+	  {
+		     uint16_t ascii_code = (int)(*Text);
+
+		  for(int i = 0; i < Font.length; i++) {
+
+		         if(Font.chars[i].code == ascii_code) {   // chars.code  Font.chars[i].code
+
+		        	 width=Font.chars[i].image->width;
+		         }
+		       }
+     size_txt_pix += width;
+	Text++;
+	}
+	  switch( Mode) {
+	         case LEFT_MODE:   // Выравнивание влево
+	             // Текст начинается от start_x
+	             result_x = Xpos;
+	             break;
+
+	         case RIGHT_MODE:  // Выравнивание вправо
+	             // Текст заканчивается у правой границы
+	             // Начало = правая граница - ширина текста
+	             result_x = (LCD_Size_X - size_txt_pix-Xpos);
+	             break;
+
+	         case CENTER_MODE: // Выравнивание по центру
+	             // Центр текста совпадает с start_x
+	             result_x = Xpos+(LCD_Size_X/2-size_txt_pix/2);
+	             break;
+
+	         default:
+	             result_x = Xpos;
+	             break;
+	     }
+
+	   //  return result_x;
+
+
+	     BSP_LCD_DsplStr_My(result_x, Ypos, ptr);
+
+
+
+
+}
+
+
+
+void BSP_LCD_DsplStr_My(uint16_t Xpos, uint16_t Ypos, uint8_t *Text)
 {
 
+
 	 uint16_t x=Xpos; uint16_t y= Ypos;
+
 
 	  typedef struct {
 	      long int code;
@@ -397,14 +466,17 @@ void BSP_LCD_DsplStr_My(uint16_t Xpos, uint16_t Ypos, uint8_t *Text, Line_ModeTy
 	     uint16_t ascii_code = (int)(*Text);
 
 	  for(int i = 0; i < Font.length; i++) {
+
+
 	         if(Font.chars[i].code == ascii_code) {   // chars.code  Font.chars[i].code
+
 
 	        	 info.width=Font.chars[i].image->width;
 	        	 info.height=Font.chars[i].image->height;
-
 	        	 info.data=Font.chars[i].image->data;
-	        	 DrawChar_MY(x,y,info.height,info.width,info.data);
+	        	    DrawChar_MY(x,y,info.height,info.width,info.data);
                  x+=info.width;
+
 	         }
 	       }
 	Text++;

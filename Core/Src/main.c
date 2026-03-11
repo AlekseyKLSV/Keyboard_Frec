@@ -84,6 +84,8 @@ typedef struct  {
 }FULL_FONT;
 */
 extern tFont Font;
+extern tImage LOGO;
+extern tImage beer_60x100_16;
 
 
 extern LCD_DrawPropTypeDef DrawProp;
@@ -112,9 +114,6 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
 void BSP_LCD_SetTextColor_MY(uint16_t Color);
-
-
-
 
 
 void mainApp(void);
@@ -176,38 +175,35 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-
-
- // LCD_MY DRW_WRP;
-
-//LCD_DrawPropTypeDef DrwPr;
-
-
-//  void BSP_LCD_SetFont_MY(DRW_WRP *pFonts)
-//  {
-//	  drw_wpr.pfont = pFonts;
-//  }
-
-
-	ili9488_FillRect(20, 20, 440, 280, LCD_COLOR_YELLOW);
+	 BSP_LCD_Clear(LCD_COLOR_GREEN);
+	 ili9488_FillRect(20, 20, 440, 280, LCD_COLOR_YELLOW);
 	 HAL_Delay(500);
-//	 BSP_LCD_Clear(LCD_COLOR_YELLOW);
 
 //	 BSP_LCD_SetFont(&Font_BIG_MY);
 	 BSP_LCD_SetFont_MY(&Font);
-	 BSP_LCD_SetTextColor(LCD_COLOR_YELLOW);
-	 BSP_LCD_SetBackColor(LCD_COLOR_RED);
-	// BSP_LCD_DsplStr_My(20, 50, (uint8_t*)"Analog,- Dew!!! 32.568", CENTER_MODE );
-	 BSP_LCD_DsplStr_My(20, 20, (uint8_t*)"ДАBЛЕНИЕ PRESSURE 0.3", CENTER_MODE );
-	 BSP_LCD_DsplStr_My(20, 90, (uint8_t*)"ПРОЦЕСС - \"Разгрузка\"", CENTER_MODE );
-	 BSP_LCD_DsplStr_My(20, 150, (uint8_t*)"123,78&  456.78%", CENTER_MODE );
+	 BSP_LCD_SetTextColor(LCD_COLOR_RED);
+	 BSP_LCD_SetBackColor(LCD_COLOR_YELLOW);
+//	 BSP_LCD_DisplayStringAt_MY(0, 50, (uint8_t*)"Analog,- Dew!!! 32.568", CENTER_MODE );
+	// BSP_LCD_SetTextColor(LCD_COLOR_YELLOW);
+	// BSP_LCD_DisplayStringAt_MY(0, 50, (uint8_t*)"Analog,- Dew!!! 32.568", CENTER_MODE );
 
+	 //BSP_LCD_ClearStringLine(LCD_COLOR_YELLOW);
+
+
+	 BSP_LCD_DsplStr_My(20, 20, (uint8_t*)"ДАBЛЕНИЕ PRESSURE 0.3");
+	 BSP_LCD_DsplStr_My(20, 90, (uint8_t*)"ПРОЦЕСС - \"Разгрузка\"" );
+	 BSP_LCD_DsplStr_My(20, 150, (uint8_t*)"123,78&  456.78%" );
+
+	// BSP_LCD_DrawBitmap(190, 50, &LOGO);
+
+
+	// BSP_LCD_DisplayStringAt(20, 20, (uint8_t*)"ДАBЛЕНИЕ PRESSURE 0.3", CENTER_MODE );
 
 	//   const  tChar *found;
 
 
     //    findChar(&Font, 'A');
-	    uint16_t  WIDTH = Font.chars->image->width;
+//	    uint16_t  WIDTH = Font.chars->image->width;
 	 //   uint16_t  HEIGHT = found->image->height;
 //	    uint16_t  CODE = found->code;
 //	    uint8_t *charData = found->image->data;
@@ -227,28 +223,6 @@ int main(void)
 
 	while (1) {
 
-	//	ili9488_SetDisplayWindow(20, 20, 480-20, 320-20);
-
-//		__NOP();
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-
-//	  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-//	  HAL_Delay(500);
-//	  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
-//	  HAL_Delay(500);
-
-	//  TIM4->CCR4 = 30;	  HAL_Delay(500);	  TIM4->CCR4 = 70;  HAL_Delay(500);
-
-/*
-	  for (int duty = 0; duty <= 99; duty += 10)
-	     {
-	       __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_4, duty);  // TIM1->CCR1 = duty;
-	       HAL_Delay(500);  // Wait 500ms before changing duty cycle
-
-	     }
-	     	     */
 
 
   }
@@ -297,61 +271,7 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-/*
-// Инициализация прерываний по внешним линиям
-void EXTI_InitConfig(void) {
-    EXTI_InitTypeDef EXTI_InitStructure;
-    NVIC_InitTypeDef NVIC_InitStructure;
 
-    // Включаем тактирование AFIO
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-
-    // Настройка PA0-PA7 для прерываний по фронту (нажатие кнопки - низкий уровень)
-    GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource0);
-    GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource1);
-    GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource2);
-    GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource3);
-    GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource4);
-    GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource5);
-    GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource6);
-    GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource7);
-
-    // Настройка EXTI линий
-    EXTI_InitStructure.EXTI_Line = EXTI_Line0 | EXTI_Line1 | EXTI_Line2 | EXTI_Line3 |
-                                   EXTI_Line4 | EXTI_Line5 | EXTI_Line6 | EXTI_Line7;
-    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; // Прерывание по спаду
-    EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-    EXTI_Init(&EXTI_InitStructure);
-
-    // Настройка NVIC для EXTI0
-    NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0F;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
-
-    // Настройка NVIC для EXTI1
-    NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;
-    NVIC_Init(&NVIC_InitStructure);
-
-    // Настройка NVIC для EXTI2
-    NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;
-    NVIC_Init(&NVIC_InitStructure);
-
-    // Настройка NVIC для EXTI3
-    NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;
-    NVIC_Init(&NVIC_InitStructure);
-
-    // Настройка NVIC для EXTI4
-    NVIC_InitStructure.NVIC_IRQChannel = EXTI4_IRQn;
-    NVIC_Init(&NVIC_InitStructure);
-
-    // Настройка NVIC для EXTI9_5 (PA5-PA7)
-    NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
-    NVIC_Init(&NVIC_InitStructure);
-}
-*/
 
 
 void TIM1_PWM_Init(void) {
@@ -448,245 +368,12 @@ uint8_t read_button_debounced(uint16_t pin) {
 
 
 
-/*
-
-void BSP_LCD_SetTextColor_MY(uint16_t Color)
-{
-    drw_wpr.TextColor=Color;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-void DrawChar_MY(uint16_t Xpos, uint16_t Ypos, const tFont *font, DRW_WRP *DrwPrp, const uint8_t *pChar){
-	  uint32_t counterh = 0, counterw = 0, index = 0;
-	  uint16_t height = 0,  width = 0;
-	  uint8_t offset = 0;
-	  uint8_t *pchar = NULL;
-	  uint64_t line = 0;
-	  uint8_t OFFSET_BITMAP = 54;
-
-	  height = font->chars->image->height;
-      width = font->chars->image->width;
-
-	  uint16_t size = (height*width*2)+OFFSET_BITMAP;
-	  uint8_t bitmap[size];
-
-
-
-
-        *(uint16_t *) (bitmap + 2) = (uint16_t)(height*width*2+OFFSET_BITMAP);
-        *(uint16_t *) (bitmap + 4) = (uint16_t)((height*width*2+OFFSET_BITMAP)>>16);
-        *(uint16_t *) (bitmap + 10) = OFFSET_BITMAP;
-        *(uint16_t *) (bitmap + 18) = (uint16_t)(width);
-        *(uint16_t *) (bitmap + 20) = (uint16_t)((width)>>16);
-        *(uint16_t *) (bitmap + 22) = (uint16_t)(height);
-        *(uint16_t *) (bitmap + 24) = (uint16_t)((height)>>16);
-
-
-
-          offset =  8 *((width + 7)/8) - width ;
-
-          for(counterh = 0; counterh < height; counterh++)
-          {
-            pchar = ((uint8_t *)pChar + (width + 7)/8 * counterh);
-
-            if(((width + 7)/8) == 6)
-                {
-                  line =  (pchar[0]<< 40) | (pchar[1]<< 32) | pchar[2]<< 24| pchar[3]<<16| pchar[4]<<8|pchar[5];
-                }
-
-            if(((width + 7)/8) == 5)
-                {
-                  line =  (pchar[0]<< 32) | (pchar[1]<< 24) | pchar[2]<< 16| pchar[3]<<8| pchar[4];
-                }
-
-            if(((width + 7)/8) == 4)
-            {
-              line =  (pchar[0]<< 24) | (pchar[1]<< 16) | pchar[2]<< 8| pchar[3];
-            }
-
-
-            if(((width + 7)/8) == 3)
-            {
-              line =  (pchar[0]<< 16) | (pchar[1]<< 8) | pchar[2];
-            }
-
-            if(((width + 7)/8) == 2)
-            {
-              line =  (pchar[0]<< 8) | pchar[1];
-            }
-
-            if(((width + 7)/8) == 1)
-            {
-              line =  pchar[0];
-            }
-
-            for (counterw = 0; counterw < width; counterw++)
-               {
-
-                 index = (((height-counterh-1)*width)+(counterw))*2+OFFSET_BITMAP;
-                 if(line & (1 << (width- counterw + offset- 1)))
-                 {
-                   bitmap[index] = (uint8_t)DrwPrp->TextColor;
-                   bitmap[index+1] = (uint8_t)(DrwPrp->TextColor >> 8);
-                 }
-                 else
-                 {
-                   bitmap[index] = (uint8_t)DrwPrp->BackColor;
-                   bitmap[index+1] = (uint8_t)(DrwPrp->BackColor >> 8);
-                 }
-               }
-
-
-          }
-
-          BSP_LCD_DrawBitmap(Xpos, Ypos, bitmap);
-}
-
-
-*/
-
-/*
- void BSP_LCD_SetFont(sFONT *pFonts)
-{
-  DrawProp.pFont = pFonts;
-}
-
- */
-
-
 
 
 void BSP_LCD_SetFont_MY(tFont *pFonts)
 {
 	DrawProp.pFont = pFonts;
 }
-
-
-
-//static void DrawChar_MY(uint16_t Xpos, uint16_t Ypos, const uint8_t *pChar)
-//{
-//  uint32_t counterh = 0, counterw = 0, index = 0;
-//  uint16_t height = 0, width = 0;
-//  uint8_t offset = 0;
-//  uint8_t *pchar = NULL;
-//  uint64_t line = 0;
-//
-//  height = font->;
-//  width  = DrawProp.pFont->Width;
-//
-//  /* Fill bitmap header*/
-//  *(uint16_t *) (bitmap + 2) = (uint16_t)(height*width*2+OFFSET_BITMAP);
-//  *(uint16_t *) (bitmap + 4) = (uint16_t)((height*width*2+OFFSET_BITMAP)>>16);
-//  *(uint16_t *) (bitmap + 10) = OFFSET_BITMAP;
-//  *(uint16_t *) (bitmap + 18) = (uint16_t)(width);
-//  *(uint16_t *) (bitmap + 20) = (uint16_t)((width)>>16);
-//  *(uint16_t *) (bitmap + 22) = (uint16_t)(height);
-//  *(uint16_t *) (bitmap + 24) = (uint16_t)((height)>>16);
-//
-//
-//  offset =  8 *((width + 7)/8) - width ;
-//
-//  for(counterh = 0; counterh < height; counterh++)
-//  {
-//    pchar = ((uint8_t *)pChar + (width + 7)/8 * counterh);
-//
-//    if(((width + 7)/8) == 6)
-//        {
-//          line =  (pchar[0]<< 40) | (pchar[1]<< 32) | pchar[2]<< 24| pchar[3]<<16| pchar[4]<<8|pchar[5];
-//        }
-//
-//    if(((width + 7)/8) == 5)
-//        {
-//          line =  (pchar[0]<< 32) | (pchar[1]<< 24) | pchar[2]<< 16| pchar[3]<<8| pchar[4];
-//        }
-//
-//    if(((width + 7)/8) == 4)
-//    {
-//      line =  (pchar[0]<< 24) | (pchar[1]<< 16) | pchar[2]<< 8| pchar[3];
-//    }
-//
-//
-//    if(((width + 7)/8) == 3)
-//    {
-//      line =  (pchar[0]<< 16) | (pchar[1]<< 8) | pchar[2];
-//    }
-//
-//    if(((width + 7)/8) == 2)
-//    {
-//      line =  (pchar[0]<< 8) | pchar[1];
-//    }
-//
-//    if(((width + 7)/8) == 1)
-//    {
-//      line =  pchar[0];
-//    }
-//
-//    for (counterw = 0; counterw < width; counterw++)
-//    {
-//      /* Image in the bitmap is written from the bottom to the top */
-//      /* Need to invert image in the bitmap */
-//      index = (((height-counterh-1)*width)+(counterw))*2+OFFSET_BITMAP;
-//      if(line & (1 << (width- counterw + offset- 1)))
-//      {
-//        bitmap[index] = (uint8_t)DrawProp.TextColor;
-//        bitmap[index+1] = (uint8_t)(DrawProp.TextColor >> 8);
-//      }
-//      else
-//      {
-//        bitmap[index] = (uint8_t)DrawProp.BackColor;
-//        bitmap[index+1] = (uint8_t)(DrawProp.BackColor >> 8);
-//      }
-//    }
-//  }
-//  BSP_LCD_DrawBitmap(Xpos, Ypos, bitmap);
-//}
-
-//___________________________________________________________________________________
-//
-//void BSP_LCD_DrawBitmap(uint16_t Xpos, uint16_t Ypos, uint8_t *pBmp)
-//{
-//  uint32_t height = 0;
-//  uint32_t width  = 0;
-//
-//  /* Read bitmap width */
-//  width = pBmp[18] + (pBmp[19] << 8) + (pBmp[20] << 16)  + (pBmp[21] << 24);
-//
-//  /* Read bitmap height */
-//  height = pBmp[22] + (pBmp[23] << 8) + (pBmp[24] << 16)  + (pBmp[25] << 24);
-//
-//  SetDisplayWindow(Xpos, Ypos, width, height);
-//
-//  if(lcd_drv->DrawBitmap != NULL)
-//  {
-//    lcd_drv->DrawBitmap(Xpos, Ypos, pBmp);
-//  }
-//  SetDisplayWindow(0, 0, BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
-//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
