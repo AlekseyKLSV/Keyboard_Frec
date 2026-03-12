@@ -1,6 +1,7 @@
 #include "main.h"
 #include "lcd.h"
 #include "ili9488.h"
+#include "stm32_adafruit_lcd.h"
 
 // Lcd
 void     ili9488_Init(void);
@@ -25,6 +26,8 @@ void     ili9488_Scroll(int16_t Scroll, uint16_t TopFix, uint16_t BottonFix);
 void     ili9488_ts_Init(uint16_t DeviceAddr);
 uint8_t  ili9488_ts_DetectTouch(uint16_t DeviceAddr);
 void     ili9488_ts_GetXY(uint16_t DeviceAddr, uint16_t *X, uint16_t *Y);
+
+extern LCD_DrawPropTypeDef DrawProp;
 
 LCD_DrvTypeDef   ili9488_drv =
 {
@@ -365,8 +368,15 @@ void ili9488_SetCursor(uint16_t Xpos, uint16_t Ypos)
 /* The SPI mode not capable the 16bpp mode -> convert to 24bpp */
 #if ILI9488_INTERFACE == 0
 extern inline void ili9488_write16to24(uint16_t RGBCode);
-inline void ili9488_write16to24(uint16_t RGBCode)
+inline void ili9488_write16to24(uint16_t RGBCode)   //MY
 {
+
+//uint16_t i = ili9488_ReadPixel(Xpos,Ypos);
+
+if(RGBCode==0xffff)               //MY
+  RGBCode = DrawProp.BackColor; //0x0000;// DrawProp.BackColor;
+else {};
+
   LCD_IO_WriteData8((RGBCode & 0xF800) >> 8);
   LCD_IO_WriteData8((RGBCode & 0x07E0) >> 3);
   LCD_IO_WriteData8((RGBCode & 0x001F) << 3);

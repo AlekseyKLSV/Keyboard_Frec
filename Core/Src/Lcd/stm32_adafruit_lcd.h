@@ -168,8 +168,13 @@ uint16_t BSP_LCD_GetTextColor(void);
 uint16_t BSP_LCD_GetBackColor(void);
 void     BSP_LCD_SetTextColor(__IO uint16_t Color);
 void     BSP_LCD_SetBackColor(__IO uint16_t Color);
-void     BSP_LCD_SetFont(sFONT *fonts);
+void     BSP_LCD_SetFont(sFONT *pFonts);
 sFONT    *BSP_LCD_GetFont(void);
+
+
+void BSP_LCD_SetFont_MY(tFont *pFonts);
+
+
 
 void     BSP_LCD_Clear(uint16_t Color);
 void     BSP_LCD_ClearStringLine(uint16_t Line);

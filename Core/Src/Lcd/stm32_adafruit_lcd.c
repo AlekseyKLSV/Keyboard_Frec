@@ -223,6 +223,16 @@ void BSP_LCD_SetFont(sFONT *pFonts)
   DrawProp.pFont = pFonts;
 }
 
+
+void BSP_LCD_SetFont_MY(tFont *pFonts)
+{
+	DrawProp.pFont = pFonts;
+}
+
+
+
+
+
 /**
   * @brief  Gets the LCD text font.
   * @param  None
@@ -778,13 +788,16 @@ void BSP_LCD_DrawBitmap(uint16_t Xpos, uint16_t Ypos, uint8_t *pBmp)
   /* Read bitmap height */
   height = pBmp[22] + (pBmp[23] << 8) + (pBmp[24] << 16)  + (pBmp[25] << 24);
   
+
+
   SetDisplayWindow(Xpos, Ypos, width, height);
+
   
   if(lcd_drv->DrawBitmap != NULL)
   {
     lcd_drv->DrawBitmap(Xpos, Ypos, pBmp);
-  } 
-  SetDisplayWindow(0, 0, BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
+  }
+ // SetDisplayWindow(0, 0, BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
 }
 
 /**
@@ -982,11 +995,11 @@ void BSP_LCD_DisplayOff(void)
 
  void DrawChar(uint16_t Xpos, uint16_t Ypos, const uint8_t *pChar)
 {
-  uint64_t counterh = 0, counterw = 0, index = 0;
+  uint32_t counterh = 0, counterw = 0, index = 0;
   uint16_t height = 0, width = 0;
   uint8_t offset = 0;
   uint8_t *pchar = NULL;
-  uint64_t line = 0;
+  uint32_t line = 0;
 
       height =  Font.chars->image->height;
   	  width  =  Font.chars->image->width;
@@ -1010,20 +1023,20 @@ void BSP_LCD_DisplayOff(void)
   {
     pchar = ((uint8_t *)pChar + (width + 7)/8 * counterh);
     
-    if(((width + 7)/8) == 6)
-        {
-          line =  (pchar[0]<< 40) | (pchar[1]<< 32) | pchar[2]<< 24| pchar[3]<<16| pchar[4]<<8|pchar[5];
-        }
-
-    if(((width + 7)/8) == 5)
-        {
-          line =  (pchar[0]<< 32) | (pchar[1]<< 24) | pchar[2]<< 16| pchar[3]<<8| pchar[4];
-        }
-
-    if(((width + 7)/8) == 4)
-    {
-      line =  (pchar[0]<< 24) | (pchar[1]<< 16) | pchar[2]<< 8| pchar[3];
-    }
+//    if(((width + 7)/8) == 6)
+//        {
+//          line =  (pchar[0]<< 40) | (pchar[1]<< 32) | pchar[2]<< 24| pchar[3]<<16| pchar[4]<<8|pchar[5];
+//        }
+//
+//    if(((width + 7)/8) == 5)
+//        {
+//          line =  (pchar[0]<< 32) | (pchar[1]<< 24) | pchar[2]<< 16| pchar[3]<<8| pchar[4];
+//        }
+//
+//    if(((width + 7)/8) == 4)
+//    {
+//      line =  (pchar[0]<< 24) | (pchar[1]<< 16) | pchar[2]<< 8| pchar[3];
+//    }
 
 
     if(((width + 7)/8) == 3)

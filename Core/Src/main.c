@@ -95,7 +95,7 @@ extern LCD_DrawPropTypeDef DrawProp;
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 
-
+void ili9488_FillRect(uint16_t Xpos, uint16_t Ypos, uint16_t Xsize, uint16_t Ysize, uint16_t RGBCode);
 
 
 
@@ -139,8 +139,9 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 
-	//FullFont->pfont->chars->image->height;
-	Font.chars->image->height;
+
+
+
 
   /* USER CODE END 1 */
 
@@ -175,8 +176,16 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-	 BSP_LCD_Clear(LCD_COLOR_GREEN);
+//	 BSP_LCD_Clear(LCD_COLOR_GREEN);
+	 BSP_LCD_SetBackColor(LCD_COLOR_GREEN);
+	 ili9488_FillRect(0, 0, 480, 320,LCD_COLOR_GREEN);
+
+ 	 BSP_LCD_DrawBitmap(210, 120,&LOGO.data);
+
+	 HAL_Delay(10000);
+
 	 ili9488_FillRect(20, 20, 440, 280, LCD_COLOR_YELLOW);
+	//  LCD_IO_WriteCmd8DataFill16(0x2C, LCD_COLOR_YELLOW, 440 * 280);
 	 HAL_Delay(500);
 
 //	 BSP_LCD_SetFont(&Font_BIG_MY);
@@ -194,29 +203,15 @@ int main(void)
 	 BSP_LCD_DsplStr_My(20, 90, (uint8_t*)"ПРОЦЕСС - \"Разгрузка\"" );
 	 BSP_LCD_DsplStr_My(20, 150, (uint8_t*)"123,78&  456.78%" );
 
-	// BSP_LCD_DrawBitmap(190, 50, &LOGO);
+
+
+//	 BSP_LCD_DrawRGB16Image(100, 50, 290, 100, &LOGO);
+
+// LCD_DrawBitmap_WhiteTransparent(190, 50,&LOGO.data, 84, 87);
+
 
 
 	// BSP_LCD_DisplayStringAt(20, 20, (uint8_t*)"ДАBЛЕНИЕ PRESSURE 0.3", CENTER_MODE );
-
-	//   const  tChar *found;
-
-
-    //    findChar(&Font, 'A');
-//	    uint16_t  WIDTH = Font.chars->image->width;
-	 //   uint16_t  HEIGHT = found->image->height;
-//	    uint16_t  CODE = found->code;
-//	    uint8_t *charData = found->image->data;
-//
-//	    BSP_LCD_SetTextColor_MY(LCD_COLOR_RED);
-//	    DrawChar_MY(10, 10,&Font, &drw_wpr,'A');
-//
-//     //   DrawChar_MY(10, 10, charData);
-//апеоакено
-//	    __NOP();
-//
-//	 //   BSP_LCD_DrawBitmap(Xpos, Ypos, bitmap);
-
 
 
  // mainApp();
@@ -364,17 +359,6 @@ uint8_t read_button_debounced(uint16_t pin) {
 
     return last_state;
 }
-
-
-
-
-
-
-void BSP_LCD_SetFont_MY(tFont *pFonts)
-{
-	DrawProp.pFont = pFonts;
-}
-
 
 
 
